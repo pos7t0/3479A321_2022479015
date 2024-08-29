@@ -28,10 +28,10 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.amber),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Ejemplo'),
     );
   }
 }
@@ -67,6 +67,29 @@ class _MyHomePageState extends State<MyHomePage> {
       _counter++;
     });
   }
+
+  void _decreaseCounter(){
+
+    setState(() {
+      // This call to setState tells the Flutter framework that something has
+      // changed in this State, which causes it to rerun the build method below
+      // so that the display can reflect the updated values. If we changed
+      // _counter without calling setState(), then the build method would not be
+      // called again, and so nothing would appear to happen.
+      _counter--;
+    });
+}
+  void _restartCounter(){
+
+    setState(() {
+      // This call to setState tells the Flutter framework that something has
+      // changed in this State, which causes it to rerun the build method below
+      // so that the display can reflect the updated values. If we changed
+      // _counter without calling setState(), then the build method would not be
+      // called again, and so nothing would appear to happen.
+      _counter=0;
+    });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'You have pushed the button this many times:',
+              'has pulsado el boton un total de:',
             ),
             Text(
               '$_counter',
@@ -115,11 +138,55 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          INcrement(),
+
+          Decrease(),
+
+          Restart(), 
+        
+        ],
+        
       ), // This trailing comma makes auto-formatting nicer for build methods.
+      
     );
+  }
+
+  FloatingActionButton Restart() {
+    return FloatingActionButton(
+          onPressed: _restartCounter,
+          tooltip:'Reiniciar',
+          shape:RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50.0),
+          ),
+          child: const Icon(Icons.restart_alt),
+
+        );
+  }
+
+  FloatingActionButton Decrease() {
+    return FloatingActionButton(
+          onPressed: _decreaseCounter,
+          tooltip:'disminuir',
+          shape:RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50.0),
+          ),
+          child: const Icon(Icons.exposure_minus_1),
+
+        );
+  }
+
+  FloatingActionButton INcrement() {
+    return FloatingActionButton(
+          onPressed: _incrementCounter,
+          tooltip:'Incrementa',
+          shape:RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50.0),
+          ),
+          child: const Icon(Icons.plus_one),
+
+        );
   }
 }
