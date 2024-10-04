@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:logger/logger.dart';
-import 'detail_page.dart'; // Importar DetailPage
 
 final logger = Logger();
 
@@ -16,152 +15,118 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  bool _hasLogged = false;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-      logger.d("Counter incremented to $_counter");
-    });
+  // initState: Se llama cuando el widget es insertado por primera vez
+  @override
+  void initState() {
+    super.initState();
+    logger.i("initState: Widget insertado en el árbol");
+    print("initState: Widget insertado en el árbol");
   }
 
-  void _decrementCounter() {
-    setState(() {
-      if (_counter > 0) _counter--;
-      logger.d("Counter decremented to $_counter");
-    });
+  // didChangeDependencies: Se llama cuando las dependencias cambian
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    logger.i("didChangeDependencies: Dependencias cambiaron");
+    print("didChangeDependencies: Dependencias cambiaron");
   }
 
-  void _resetCounter() {
-    setState(() {
-      _counter = 0;
-      logger.d("Counter reset to $_counter");
-    });
-  }
-
-  // Función para determinar el mensaje y el ícono a mostrar
-  Widget _getGameStatus() {
-    String message;
-    Widget icon;
-
-    // Asignar mensaje e ícono dependiendo del valor del contador
-    if (_counter == 10) {
-      message = "¡Victoria!";
-      icon = SvgPicture.asset(
-        'assets/icon/win.svg',
-        width: 100,
-        height: 100,
-        semanticsLabel: 'Victoria Icon',
-      );
-    } else if (_counter == 5) {
-      message = "Derrota";
-      icon = SvgPicture.asset(
-        'assets/icon/game_over.svg',
-        width: 100,
-        height: 100,
-        semanticsLabel: 'Derrota Icon',
-      );
-    } else {
-      message = "¡Sigue jugando!";
-      icon = SvgPicture.asset(
-        'assets/icon/food_mango.svg',
-        width: 100,
-        height: 100,
-        semanticsLabel: 'bot_icon',
-      );
-    }
-
-    // Devolver tanto el mensaje como el ícono en una columna
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        icon, // Mostrar el ícono
-        const SizedBox(height: 16),
-        Text(
-          message,
-          style: const TextStyle(
-            fontSize: 24,
-            color: Colors.black,
-          ),
-        ),
-      ],
-    );
-  }
-
+  // build: El método build es el que dibuja la interfaz
   @override
   Widget build(BuildContext context) {
-    if (!_hasLogged) {
-      logger.i("Building MyHomePage");
-      _hasLogged = true;
-    }
+    logger.i("build: Construyendo la interfaz de MyHomePage");
+    print("build: Construyendo la interfaz de MyHomePage");
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.amber,
         title: Text(widget.title),
       ),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            // Card con el estado del juego y el contador
-            Card(
-              color: const Color.fromARGB(0, 0, 0, 0), // Color de la Card
-              elevation: 1, // Elevación de la Card
-              margin: const EdgeInsets.all(16),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    // Mensaje del juego (Victoria, Derrota o Sigue jugando)
-                    _getGameStatus(),
-                    const SizedBox(height: 16),
-                    Text(
-                      '$_counter',
-                      style: const TextStyle(
-                        fontSize: 40,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    // Botones para incrementar, decrementar y resetear
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          onPressed: _decrementCounter,
-                          icon: const Icon(Icons.arrow_downward),
-                        ),
-                        IconButton(
-                          onPressed: _resetCounter,
-                          icon: const Icon(Icons.refresh),
-                        ),
-                        IconButton(
-                          onPressed: _incrementCounter,
-                          icon: const Icon(Icons.arrow_upward),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+            Text(
+              '$_counter',
+              style: const TextStyle(fontSize: 40),
             ),
-            const SizedBox(height: 16),
-            // Botón fuera de la Card
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const DetailPage(),
-                  ),
-                ); // Navegar a DetailPage
-              },
-              child: const Text('Go to Detail Page'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  onPressed: _decrementCounter,
+                  icon: const Icon(Icons.arrow_downward),
+                ),
+                IconButton(
+                  onPressed: _resetCounter,
+                  icon: const Icon(Icons.refresh),
+                ),
+                IconButton(
+                  onPressed: _incrementCounter,
+                  icon: const Icon(Icons.arrow_upward),
+                ),
+              ],
             ),
           ],
         ),
       ),
     );
+  }
+
+  // setState: Cambia el estado del widget
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+      logger.d("setState: Counter incrementado a $_counter");
+      print("setState: Counter incrementado a $_counter");
+    });
+  }
+
+  void _decrementCounter() {
+    setState(() {
+      if (_counter > 0) _counter--;
+      logger.d("setState: Counter decrementado a $_counter");
+      print("setState: Counter decrementado a $_counter");
+    });
+  }
+
+  void _resetCounter() {
+    setState(() {
+      _counter = 0;
+      logger.d("setState: Counter reiniciado a $_counter");
+      print("setState: Counter reiniciado a $_counter");
+    });
+  }
+
+  // didUpdateWidget: Se llama cuando el widget se actualiza con nuevas propiedades
+  @override
+  void didUpdateWidget(MyHomePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    logger.i("didUpdateWidget: Widget actualizado");
+    print("didUpdateWidget: Widget actualizado");
+  }
+
+  // deactivate: Llamado cuando el widget se quita temporalmente del árbol
+  @override
+  void deactivate() {
+    super.deactivate();
+    logger.w("deactivate: Widget removido del árbol temporalmente");
+    print("deactivate: Widget removido del árbol temporalmente");
+  }
+
+  // dispose: Se llama cuando el widget es removido permanentemente del árbol
+  @override
+  void dispose() {
+    logger.e("dispose: Widget eliminado permanentemente");
+    print("dispose: Widget eliminado permanentemente");
+    super.dispose();
+  }
+
+  // reassemble: Llamado durante hot reload
+  @override
+  void reassemble() {
+    super.reassemble();
+    logger.i("reassemble: App reconstruida durante hot reload");
+    print("reassemble: App reconstruida durante hot reload");
   }
 }
