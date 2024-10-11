@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart'; // Asegúrate de tener esta dependencia
 import 'package:provider/provider.dart';  // Importar Provider
-import 'app_data.dart';  // Importar AppData
+import '../models/app_data.dart';  // Importar AppData
 import 'detail_page.dart';
 import 'about_page.dart';
 import 'auditoria_page.dart';

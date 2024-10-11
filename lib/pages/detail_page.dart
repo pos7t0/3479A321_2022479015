@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart'; // Importar Provider
-import 'app_data.dart'; // Importar AppData
+import '../models/app_data.dart'; // Importar AppData
 
 class DetailPage extends StatelessWidget {
   const DetailPage({super.key});

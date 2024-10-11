@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart'; // Importar Provider
-import 'app_data.dart'; // Importar AppData
+import '../models/app_data.dart'; // Importar AppData
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';  // Importar el package provider
 import 'pages/MyHomeState.dart';
-import 'pages/app_data.dart';  // Importar la clase AppData
+import 'models/app_data.dart';  // Importar la clase AppData
 
 void main() {
   runApp(
