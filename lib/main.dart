@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';  // Importar el package provider
 import 'pages/MyHomeState.dart';
+import 'pages/app_data.dart';  // Importar la clase AppData
 
 void main() {
-  
-  runApp(const MyApp());
-  
+  runApp(
+    ChangeNotifierProvider<AppData>(  // Envolver la aplicación con ChangeNotifierProvider
+      create: (context) => AppData(),  // Crear una instancia de AppData
+      child: const MyApp(),
+    ),
+  );
 }
 
 var logger = Logger(
@@ -21,32 +26,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.amber),
         fontFamily: 'Create',
-        
         useMaterial3: true,
-        
       ),
-      home: const MyHomePage(title: 'Ejemplo'),
+      home: const MyHomePage(title: 'Ejemplo'),  // Tu página inicial
     );
   }
 }
-/*class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}*/
-

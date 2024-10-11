@@ -1,13 +1,10 @@
-//import 'package:flutter/material.dart';
-import 'package:ejem/pages/auditoria_page.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-//import 'package:logger/logger.dart';
-import 'about_page.dart';
-import 'detail_page.dart';
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
-
-final logger = Logger();
+import 'package:flutter_svg/flutter_svg.dart'; // Asegúrate de tener esta dependencia
+import 'package:provider/provider.dart';  // Importar Provider
+import 'app_data.dart';  // Importar AppData
+import 'detail_page.dart';
+import 'about_page.dart';
+import 'auditoria_page.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -15,17 +12,47 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  State<MyHomePage> createState() {
-    logger.i("createState: Se creó el estado de MyHomePage");
-    return _MyHomePageState();
-  }
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
   @override
   Widget build(BuildContext context) {
+    final appData = Provider.of<AppData>(context); // Ahora el widget escuchará los cambios
+
+    // Registrar la acción de acceso a la pantalla principal
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      appData.addAction('Acceso a la pantalla principal');  // Usar el nuevo método
+    });
+
+    // Definir el icono dependiendo de si el contador es múltiplo de 5
+    Widget getIcon() {
+      if (appData.counter % 5 == 0 && appData.counter != 0) {
+        if ((appData.counter ~/ 5) % 2 == 0) {
+          // Alternar: si es múltiplo de 2, mostrar "ganar"
+          return SvgPicture.asset(
+            'assets/icon/win.svg',
+            semanticsLabel: 'Win Icon',
+            width: 100,
+          );
+        } else {
+          // Alternar: si es impar, mostrar "perder"
+          return SvgPicture.asset(
+            'assets/icon/game_over.svg',
+            semanticsLabel: 'Game Over Icon',
+            width: 100,
+          );
+        } 
+      } else {
+        // No mostrar icono si no es múltiplo de 5
+        return SvgPicture.asset(
+            'assets/icon/food_mango.svg',
+            semanticsLabel: 'Game Over Icon',
+            width: 100,
+          );
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -43,12 +70,14 @@ class _MyHomePageState extends State<MyHomePage> {
             ListTile(
               title: const Text('Contador'),
               onTap: () {
+                appData.addAction("go to contador page");
                 Navigator.pop(context);
               },
             ),
             ListTile(
               title: const Text('Detalle'),
               onTap: () {
+                appData.addAction("go to detail page");
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const DetailPage()),
@@ -58,6 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ListTile(
               title: const Text('Sobre'),
               onTap: () {
+                appData.addAction("go to sobre page");
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const AboutPage()),
@@ -67,6 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ListTile(
               title: const Text('Auditoría'),
               onTap: () {
+                appData.addAction("go to auditoría page");
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const AuditoriaPage()),
@@ -81,22 +112,23 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Text(
-              '$_counter',
+              '${appData.counter}',  // Mostrar el valor del contador desde el Provider
               style: const TextStyle(fontSize: 40),
             ),
+            getIcon(),  // Mostrar el icono alternante si es múltiplo de 5
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  onPressed: _decrementCounter,
+                  onPressed: appData.decrementCounter,  // Disminuir contador desde el Provider
                   icon: const Icon(Icons.arrow_downward),
                 ),
                 IconButton(
-                  onPressed: _resetCounter,
+                  onPressed: appData.resetCounter,  // Resetear contador desde el Provider
                   icon: const Icon(Icons.refresh),
                 ),
                 IconButton(
-                  onPressed: _incrementCounter,
+                  onPressed: appData.incrementCounter,  // Aumentar contador desde el Provider
                   icon: const Icon(Icons.arrow_upward),
                 ),
               ],
@@ -106,31 +138,4 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-      logger.d("setState: Counter incrementado a $_counter");
-    });
-  }
-
-  void _decrementCounter() {
-    setState(() {
-      if (_counter > 0) _counter--;
-      logger.d("setState: Counter decrementado a $_counter");
-    });
-  }
-
-  void _resetCounter() {
-    setState(() {
-      _counter = 0;
-      logger.d("setState: Counter reiniciado a $_counter");
-    });
-  }
 }
-
-// Nueva pantalla de Auditoría
-
-
-
-
