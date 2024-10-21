@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Asegúrate de tener esta dependencia
-import 'package:provider/provider.dart';  // Importar Provider
-import '../models/app_data.dart';  // Importar AppData
-import 'detail_page.dart';
-import 'about_page.dart';
-import 'auditoria_page.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';  // Importar SharedPreferences
+import 'detail_page.dart';  // Importar la página de Detalle
+import 'about_page.dart';   // Importar la página Sobre
+import 'auditoria_page.dart';  // Importar Auditoría
+import 'preference_page.dart';  // Importar la pantalla de Preferencias
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -16,43 +16,56 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String _userName = '';  // Variable para almacenar el nombre de usuario
+  int _counter = 0;  // Variable para almacenar el valor del contador
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPreferences();  // Cargar preferencias al iniciar la pantalla
+  }
+
+  // Método para cargar las preferencias
+  Future<void> _loadPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _userName = prefs.getString('userName') ?? '';  // Cargar nombre de usuario
+      _counter = prefs.getInt('counter') ?? 0;  // Cargar valor del contador
+      print('Counter value $_counter is loaded');
+      print('Username value $_userName is loaded');
+    });
+  }
+
+  // Definir el icono dependiendo de si el contador es múltiplo de 5
+  Widget getIcon() {
+    if (_counter % 5 == 0 && _counter != 0) {
+      if ((_counter ~/ 5) % 2 == 0) {
+        // Alternar: si es múltiplo de 2, mostrar "ganar"
+        return SvgPicture.asset(
+          'assets/icon/win.svg',
+          semanticsLabel: 'Win Icon',
+          width: 100,
+        );
+      } else {
+        // Alternar: si es impar, mostrar "perder"
+        return SvgPicture.asset(
+          'assets/icon/game_over.svg',
+          semanticsLabel: 'Game Over Icon',
+          width: 100,
+        );
+      }
+    } else {
+      // No mostrar icono si no es múltiplo de 5
+      return SvgPicture.asset(
+        'assets/icon/food_mango.svg',
+        semanticsLabel: 'Game Over Icon',
+        width: 100,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final appData = Provider.of<AppData>(context); // Ahora el widget escuchará los cambios
-
-    // Registrar la acción de acceso a la pantalla principal
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      appData.addAction('Acceso a la pantalla principal');  // Usar el nuevo método
-    });
-
-    // Definir el icono dependiendo de si el contador es múltiplo de 5
-    Widget getIcon() {
-      if (appData.counter % 5 == 0 && appData.counter != 0) {
-        if ((appData.counter ~/ 5) % 2 == 0) {
-          // Alternar: si es múltiplo de 2, mostrar "ganar"
-          return SvgPicture.asset(
-            'assets/icon/win.svg',
-            semanticsLabel: 'Win Icon',
-            width: 100,
-          );
-        } else {
-          // Alternar: si es impar, mostrar "perder"
-          return SvgPicture.asset(
-            'assets/icon/game_over.svg',
-            semanticsLabel: 'Game Over Icon',
-            width: 100,
-          );
-        } 
-      } else {
-        // No mostrar icono si no es múltiplo de 5
-        return SvgPicture.asset(
-            'assets/icon/food_mango.svg',
-            semanticsLabel: 'Game Over Icon',
-            width: 100,
-          );
-      }
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -70,14 +83,15 @@ class _MyHomePageState extends State<MyHomePage> {
             ListTile(
               title: const Text('Contador'),
               onTap: () {
-                appData.addAction("go to contador page");
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MyHomePage(title: 'Contador',)),
+                );
               },
             ),
             ListTile(
               title: const Text('Detalle'),
               onTap: () {
-                appData.addAction("go to detail page");
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const DetailPage()),
@@ -87,7 +101,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ListTile(
               title: const Text('Sobre'),
               onTap: () {
-                appData.addAction("go to sobre page");
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const AboutPage()),
@@ -97,11 +110,21 @@ class _MyHomePageState extends State<MyHomePage> {
             ListTile(
               title: const Text('Auditoría'),
               onTap: () {
-                appData.addAction("go to auditoría page");
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const AuditoriaPage()),
                 );
+              },
+            ),
+            ListTile(
+              title: const Text('Preferencias'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const PreferencePage()),
+                ).then((_) {
+                  _loadPreferences();  // Volver a cargar las preferencias al regresar
+                });
               },
             ),
           ],
@@ -111,8 +134,13 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
+            if (_userName.isNotEmpty)
+              Text(
+                'Hola $_userName',  // Mostrar mensaje de bienvenida si hay nombre
+                style: const TextStyle(fontSize: 30),
+              ),
             Text(
-              '${appData.counter}',  // Mostrar el valor del contador desde el Provider
+              '$_counter',  // Mostrar el valor del contador
               style: const TextStyle(fontSize: 40),
             ),
             getIcon(),  // Mostrar el icono alternante si es múltiplo de 5
@@ -120,15 +148,27 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  onPressed: appData.decrementCounter,  // Disminuir contador desde el Provider
+                  onPressed: () {
+                    setState(() {
+                      if (_counter > 0) _counter--;
+                    });
+                  },
                   icon: const Icon(Icons.arrow_downward),
                 ),
                 IconButton(
-                  onPressed: appData.resetCounter,  // Resetear contador desde el Provider
+                  onPressed: () {
+                    setState(() {
+                      _counter = 0;
+                    });
+                  },
                   icon: const Icon(Icons.refresh),
                 ),
                 IconButton(
-                  onPressed: appData.incrementCounter,  // Aumentar contador desde el Provider
+                  onPressed: () {
+                    setState(() {
+                      _counter++;
+                    });
+                  },
                   icon: const Icon(Icons.arrow_upward),
                 ),
               ],

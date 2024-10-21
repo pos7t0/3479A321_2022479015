@@ -4,10 +4,11 @@ import 'package:provider/provider.dart';  // Importar el package provider
 import 'pages/MyHomeState.dart';
 import 'models/app_data.dart';  // Importar la clase AppData
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();  // Asegurar la inicialización
   runApp(
-    ChangeNotifierProvider<AppData>(  // Envolver la aplicación con ChangeNotifierProvider
-      create: (context) => AppData(),  // Crear una instancia de AppData
+    ChangeNotifierProvider<AppData>(
+      create: (context) => AppData(),
       child: const MyApp(),
     ),
   );
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Create',
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Ejemplo'),  // Tu página inicial
+      home: const MyHomePage(title: 'Contador'),  // Tu página inicial
     );
   }
 }
